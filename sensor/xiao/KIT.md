@@ -1,6 +1,6 @@
 # IoT Starter Kit Parts
 
-The IoT starter kits that we have at Gophercon EU consist of the following parts:
+The IoT starter kits that we have at GopherCon consist of the following parts:
 
 ### White Breadboard
 

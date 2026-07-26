@@ -1,10 +1,10 @@
-# Gophercon EU 2026 Hardware Hack Session
+# GopherCon 2026 Hardware Hack Session
 
-![Gophercon.EU logo](./images/gophercon-eu-logo.png)
+![Gophercon logo](./images/gophercon-logo.png)
 
-The is the repository for the hardware hack session at Gophercon EU 2026.
+The is the repository for the hardware hack session at GopherCon 2026.
 
-https://www.gophercon.eu/
+https://www.gophercon.com/
 
 ### Please return all borrowed equipment when you are finished for the next person. Thank you!
 
@@ -31,7 +31,7 @@ These are some of the activities you can do with the hardware we have available.
 - [WowWee MiP robot](#wowwee-mip-robot)
 - [Sphero Mini robot](#sphero-mini-robot)
 
-Post your robot picture and videos using hashtag #gopherconeu
+Post your robot picture and videos using hashtag #gophercon
 
 ### TinyGo Xiao IoT sensor
 

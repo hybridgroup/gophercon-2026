@@ -5,7 +5,7 @@
 First use git to clone this repo to your local machine:
 
 ```
-git clone https://github.com/hybridgroup/gopherconeu-2026.git
+git clone https://github.com/hybridgroup/gophercon-2026.git
 cd gophercon-2026
 ```
 
