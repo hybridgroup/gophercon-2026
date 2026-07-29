@@ -4,16 +4,16 @@ package main
 
 import "os"
 
-func connectAddress() string {
+func connectName() string {
 	if len(os.Args) < 2 {
-		println("usage: heartratemonitor [address]")
+		println("usage: heartratemonitor [name]")
 		os.Exit(1)
 	}
 
 	// look for device with specific name
-	address := os.Args[1]
+	name := os.Args[1]
 
-	return address
+	return name
 }
 
 // done just prints a message and allows program to exit.

@@ -2,31 +2,24 @@ package main
 
 import (
 	"fmt"
-	"image/color"
+	"strconv"
 
 	"tinygo.org/x/bluetooth"
 	"tinygo.org/x/tinyterm"
 )
 
+var DeviceName string
+
 var (
 	terminal *tinyterm.Terminal
 
-	black = color.RGBA{0, 0, 0, 255}
-)
-
-var DeviceAddress string
-
-var (
 	adapter = bluetooth.DefaultAdapter
-
-	heartRateServiceUUID        = bluetooth.ServiceUUIDHeartRate
-	heartRateCharacteristicUUID = bluetooth.CharacteristicUUIDHeartRateMeasurement
 )
 
 func main() {
 	initTerminal()
 
-	terminalOutput("enabling")
+	terminalOutput("enable interface...")
 
 	// Enable BLE interface.
 	must("enable BLE stack", adapter.Enable())
@@ -34,15 +27,14 @@ func main() {
 	ch := make(chan bluetooth.ScanResult, 1)
 
 	// Start scanning.
-	println("scanning...")
+	terminalOutput("scanning...")
 	err := adapter.Scan(func(adapter *bluetooth.Adapter, result bluetooth.ScanResult) {
 		terminalOutput(fmt.Sprintf("found device: %s %d %s", result.Address.String(), result.RSSI, result.LocalName()))
-		if result.Address.String() == DeviceAddress {
+		if result.LocalName() == DeviceName {
 			adapter.StopScan()
 			ch <- result
 		}
 	})
-	must("start scanning", err)
 
 	var device bluetooth.Device
 	select {
@@ -58,34 +50,44 @@ func main() {
 
 	// get services
 	terminalOutput("discovering services/characteristics")
-	srvcs, err := device.DiscoverServices([]bluetooth.UUID{heartRateServiceUUID})
+
+	srvcs, err := device.DiscoverServices(nil)
 	must("discover services", err)
 
-	if len(srvcs) == 0 {
-		panic("could not find heart rate service")
+	// buffer to retrieve characteristic data
+	buf := make([]byte, 255)
+
+	for _, srvc := range srvcs {
+		terminalOutput("- srv " + srvc.UUID().String())
+
+		chars, err := srvc.DiscoverCharacteristics(nil)
+		if err != nil {
+			terminalOutput(err.Error())
+		}
+		for _, char := range chars {
+			terminalOutput("-- chr " + char.UUID().String())
+			mtu, err := char.GetMTU()
+			if err != nil {
+				terminalOutput("  mtu: error: " + err.Error())
+			} else {
+				terminalOutput("  mtu: " + strconv.Itoa(int(mtu)))
+			}
+			n, err := char.Read(buf)
+			if err != nil {
+				terminalOutput("  " + err.Error())
+			} else {
+				terminalOutput("  data size " + strconv.Itoa(n))
+				terminalOutput("  value = " + string(buf[:n]))
+			}
+		}
 	}
 
-	srvc := srvcs[0]
-
-	terminalOutput("found service" + srvc.UUID().String())
-
-	chars, err := srvc.DiscoverCharacteristics([]bluetooth.UUID{heartRateCharacteristicUUID})
+	err = device.Disconnect()
 	if err != nil {
 		terminalOutput(err.Error())
 	}
 
-	if len(chars) == 0 {
-		panic("could not find heart rate characteristic")
-	}
-
-	char := chars[0]
-	terminalOutput("found characteristic" + char.UUID().String())
-
-	char.EnableNotifications(func(buf []byte) {
-		terminalOutput(fmt.Sprintf("data: %d", uint8(buf[1])))
-	})
-
-	select {}
+	terminalOutput("done")
 }
 
 func must(action string, err error) {

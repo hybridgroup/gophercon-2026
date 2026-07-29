@@ -15,7 +15,7 @@ Did you bring your badge with you from a previous year? Flash it with the latest
 - [Badger2040-W](https://github.com/hybridgroup/badger2040)
 - [GoBadge](https://github.com/tinygo-org/gobadge)
 
-Do you want a TinyGo nametag or programmable badge? We have just a few with us today... Ask us!
+Do you want a TinyGo programmable badge? We have just a few with us today... Ask us!
 
 ## Installation
 
@@ -26,7 +26,7 @@ Please read our [installation instructions here](./INSTALL.md).
 These are some of the activities you can do with the hardware we have available. But that is only a starting point! Explore, experiment, learn, and have fun!
 
 - [TinyGo Xiao IoT sensor](#tinygo-xiao-iot-sensor)
-- [TinyGo M5Stack Core 2](#tinygo-m5stack-core-2)
+- [TinyGo Bluetooth](#tinygo-bluetooth)
 - [Parrot Minidrone](#parrot-minidrone)
 - [WowWee MiP robot](#wowwee-mip-robot)
 - [Sphero Mini robot](#sphero-mini-robot)
@@ -47,17 +47,13 @@ There are some Grove sensor kits that you can use for the activity.
 
 Ready to try this out? Go to [./sensor/xiao/](./sensor/xiao/) to get started.
 
-### TinyGo M5Stack Core 2
+### TinyGo Bluetooth
 
-![m5stack Core 2](./images/m5stack-core2.webp)
+[![Go Bluetooth](./images/gobluetooth.png)](https://tinygo.org/bluetooth)
 
-We also have a few M5Stack Core2 Kits you can try out with TinyGo.
+This series of tutorials is intended to help you learn about programming Bluetooth devices using TinyGo and the TinyGo Bluetooth package. Using a Seeed Studio Xiao ESP32-C3 microcontroller board and tiny display, discover the Bluetooth devices all around us, and make one of your own.
 
-https://docs.m5stack.com/en/core/core2
-
-These can be programmed using TinyGo, in fact our friends as Espressif have an entire self-guided workshop!
-
-Ready to explore? Go to the [Espressif TinyGo Embedded Workshop](https://developer.espressif.com/workshops/tinygo/) to get started.
+Ready to Go wireless? Click on [./bluetooth/xiao/](./bluetooth/xiao/) to get started.
 
 ### Parrot Minidrone
 
