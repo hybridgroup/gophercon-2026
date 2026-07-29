@@ -6,7 +6,7 @@ import (
 	"tinygo.org/x/bluetooth"
 )
 
-var DeviceAddress string
+var DeviceName string
 
 var adapter = bluetooth.DefaultAdapter
 
@@ -22,7 +22,7 @@ func main() {
 	println("scanning...")
 	err := adapter.Scan(func(adapter *bluetooth.Adapter, result bluetooth.ScanResult) {
 		println("found device:", result.Address.String(), result.RSSI, result.LocalName())
-		if result.Address.String() == DeviceAddress {
+		if result.LocalName() == DeviceName {
 			adapter.StopScan()
 			ch <- result
 		}
