@@ -4,7 +4,6 @@ import (
 	"net/netip"
 	"time"
 
-	"tinygo.org/x/drivers/netdev"
 	"tinygo.org/x/espradio"
 	nl "tinygo.org/x/espradio/netlink"
 )
@@ -12,7 +11,7 @@ import (
 var (
 	ssid     string
 	password string
-	port     string = ":80"
+	port     uint16 = 80
 
 	link nl.Esplink
 )
@@ -24,7 +23,6 @@ func connectWifi() {
 	time.Sleep(2 * time.Second)
 
 	link.ArenaPoolSize = 1024 * 42
-	netdev.UseNetdev(&link)
 
 	println("Connecting to WiFi...")
 	err := link.NetConnectAP(nl.APConnectParams{
