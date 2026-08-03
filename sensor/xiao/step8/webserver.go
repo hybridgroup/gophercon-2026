@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
-
 	_ "embed"
+
+	"github.com/soypat/lneto/http/httphi"
 )
 
 //go:embed index.html
@@ -24,45 +24,48 @@ var (
 )
 
 func startWebServer() {
+	var http httphi.MuxSlice
+	http.Handle("/", root)
+	http.Handle("/mincss.min.css", css)
+	http.Handle("/6", sixlines)
+	http.Handle("/on", systemActivate)
+	http.Handle("/off", systemDeactivate)
+
 	h, _ := link.Addr()
 	host := h.String()
-	println("HTTP server listening on http://" + host + port)
-
-	http.HandleFunc("/", root)
-	http.HandleFunc("/mincss.min.css", css)
-	http.HandleFunc("/6", sixlines)
-	http.HandleFunc("/on", systemActivate)
-	http.HandleFunc("/off", systemDeactivate)
-
-	err := http.ListenAndServe(host+port, nil)
-	for err != nil {
-		failMessage("error: " + err.Error())
+	print("HTTP server listening on http://", host, ":", port, "\n")
+	var router httphi.Router
+	cfg := httphi.DefaultRouterConfig(4, 2048, http.MaxPathValues())
+	err := router.Configure(&http, cfg)
+	if err != nil {
+		failMessage("router configuration: " + err.Error())
 	}
+	// ListenAndServe should block indefinetely unless Router shut down
+	err = link.ListenAndServe(&router, port)
+	failMessage("listen and serve failed: " + err.Error())
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(page))
+func root(exch *httphi.Exchange) {
+	exch.RespondString(httphi.StatusOK, "text/html", page)
 }
 
-func css(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(mincss))
+func css(exch *httphi.Exchange) {
+	exch.RespondString(httphi.StatusOK, "text/css", mincss)
 }
 
 // https://fukuno.jig.jp/3267
-func sixlines(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(tetromino))
+func sixlines(exch *httphi.Exchange) {
+	exch.RespondString(httphi.StatusOK, "text/html", tetromino)
 }
 
-func systemActivate(w http.ResponseWriter, r *http.Request) {
+const textplain = "text/plain; charset=UTF-8"
+
+func systemActivate(exch *httphi.Exchange) {
 	systemActive = true
-	w.Header().Set(`Content-Type`, `text/plain; charset=UTF-8`)
-	w.Write(responseActive)
+	exch.Respond(httphi.StatusOK, textplain, responseActive)
 }
 
-func systemDeactivate(w http.ResponseWriter, r *http.Request) {
+func systemDeactivate(exch *httphi.Exchange) {
 	systemActive = false
-	w.Header().Set(`Content-Type`, `text/plain; charset=UTF-8`)
-	w.Write(responseInactive)
+	exch.Respond(httphi.StatusOK, textplain, responseInactive)
 }

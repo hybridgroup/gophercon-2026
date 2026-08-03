@@ -4,7 +4,6 @@ import (
 	"net/netip"
 	"time"
 
-	"tinygo.org/x/drivers/netdev"
 	"tinygo.org/x/espradio"
 	nl "tinygo.org/x/espradio/netlink"
 )
@@ -12,7 +11,7 @@ import (
 var (
 	ssid     string
 	password string
-	port     string = ":80"
+	port     uint16 = 80
 
 	link nl.Esplink
 )
@@ -22,8 +21,6 @@ const apIP = "192.168.4.1"
 func connectWifi() {
 	// wait a bit for serial
 	time.Sleep(2 * time.Second)
-
-	netdev.UseNetdev(&link)
 
 	println("Connecting to WiFi...")
 	err := link.NetConnectAP(nl.APConnectParams{

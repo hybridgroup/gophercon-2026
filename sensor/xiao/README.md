@@ -227,7 +227,7 @@ Take a look at the code in the file `webserver.go`. A few things of note:
 
 - The HTML page is embedded into the binary that is loaded onto the Xiao using the normal `go:embed` directive.
 - Likewise the CSS file is also embedded into the binary. The CSS is from a very small framework called [MinCSS](https://mincss.com/docs.html).
-- Even though it is running on the Xiao, the normal `net/html` package is used to implement the web server using calls to `http.HandleFunc()` and `http.ListenAndServe()`.
+- The web server is implemented with [`httphi`](https://github.com/soypat/lneto), a small HTTP package designed for microcontrollers. Routes are registered on a `httphi.MuxSlice` with `Handle()`, and a `httphi.Router` serves them. The router allocates its exchanges and worker goroutines once, at `Configure()` time, so serving requests does not grow memory with load. Handlers take a single `*httphi.Exchange` instead of the `net/http` pair of `http.ResponseWriter` and `*http.Request`.
 
 The Xiao board will act as an access point. You will need to connect your computer to it to connect to the web server running on the Xiao. Replace `myssid` with something unique for your WiFi setup, then flash the board with the following command:
 

@@ -1,9 +1,11 @@
 package main
 
 import (
-	"net/http"
-
 	_ "embed"
+	"sync"
+
+	"github.com/soypat/lneto/http/httphi"
+	"github.com/soypat/lneto/http/httpraw"
 )
 
 //go:embed index.html
@@ -20,81 +22,91 @@ var (
 	responseInactive       = []byte("system inactive")
 	responseStatusActive   = []byte(`{"status": "active"}`)
 	responseStatusInactive = []byte(`{"status": "inactive"}`)
-	levelJSON              [20]byte // reused buffer for /alarmlevel JSON response
 )
 
+// scratchPool hands out work buffers to handlers so that parsing a form or
+// building a JSON response does not allocate on every request.
+var scratchPool sync.Pool
+
+const scratchSize = 128
+
 func startWebServer() {
+	scratchPool.New = func() interface{} { return make([]byte, scratchSize) }
+
+	var http httphi.MuxSlice
+	http.Handle("/", root)
+	http.Handle("/mincss.min.css", css)
+	http.Handle("/on", systemActivate)
+	http.Handle("/off", systemDeactivate)
+	http.Handle("/status", systemStatus)
+	http.Handle("/alarmlevel", alarmlevel)
+
 	h, _ := link.Addr()
-	host := h.String() + port
-	println("HTTP server listening on http://" + host)
-
-	http.HandleFunc("/", root)
-	http.HandleFunc("/mincss.min.css", css)
-	http.HandleFunc("/on", systemActivate)
-	http.HandleFunc("/off", systemDeactivate)
-	http.HandleFunc("/status", systemStatus)
-	http.HandleFunc("/alarmlevel", alarmlevel)
-
-	err := http.ListenAndServe(host, nil)
-	for err != nil {
-		failMessage("error: " + err.Error())
+	host := h.String()
+	print("HTTP server listening on http://", host, ":", port, "\n")
+	var router httphi.Router
+	cfg := httphi.DefaultRouterConfig(4, 2048, http.MaxPathValues())
+	err := router.Configure(&http, cfg)
+	if err != nil {
+		failMessage("router configuration: " + err.Error())
 	}
+	// ListenAndServe should block indefinetely unless Router shut down
+	err = link.ListenAndServe(&router, port)
+	failMessage("listen and serve failed: " + err.Error())
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(page))
+func root(exch *httphi.Exchange) {
+	exch.RespondString(httphi.StatusOK, "text/html", page)
 }
 
-func css(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(mincss))
+func css(exch *httphi.Exchange) {
+	exch.RespondString(httphi.StatusOK, "text/css", mincss)
 }
 
-func systemActivate(w http.ResponseWriter, r *http.Request) {
+const (
+	textplain = "text/plain; charset=UTF-8"
+	appjson   = "application/json"
+)
+
+func systemActivate(exch *httphi.Exchange) {
 	systemActive = true
-	w.Header().Set(`Content-Type`, `text/plain; charset=UTF-8`)
-	w.Write(responseActive)
+	exch.Respond(httphi.StatusOK, textplain, responseActive)
 }
 
-func systemDeactivate(w http.ResponseWriter, r *http.Request) {
+func systemDeactivate(exch *httphi.Exchange) {
 	systemActive = false
-	w.Header().Set(`Content-Type`, `text/plain; charset=UTF-8`)
-	w.Write(responseInactive)
+	exch.Respond(httphi.StatusOK, textplain, responseInactive)
 }
 
-func systemStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set(`Content-Type`, `application/json`)
+func systemStatus(exch *httphi.Exchange) {
 	if systemActive {
-		w.Write(responseStatusActive)
+		exch.Respond(httphi.StatusOK, appjson, responseStatusActive)
 	} else {
-		w.Write(responseStatusInactive)
+		exch.Respond(httphi.StatusOK, appjson, responseStatusInactive)
 	}
 }
 
-func alarmlevel(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		var buf [32]byte
-		n, _ := r.Body.Read(buf[:])
-		b := buf[:n]
-		for i := 0; i < n; i++ {
-			if b[i] == '=' {
-				end := i + 1
-				for end < n && b[end] != '&' {
-					end++
-				}
-				if end > i+1 {
-					alarmLevel = uint16(bytesToInt(b[i+1 : end]))
-				}
-				break
-			}
+func alarmlevel(exch *httphi.Exchange) {
+	scratch := scratchPool.Get().([]byte)
+	defer scratchPool.Put(scratch)
+
+	if exch.RequestMethod() == httphi.MethPost {
+		var form httpraw.Form
+		form.Reset(scratch, 1) // 1 form value max: "level".
+		const parseURL, prioritizeURL = false, false
+		err := exch.RequestParseForm(&form, parseURL, prioritizeURL)
+		if err != nil {
+			exch.Respond(httphi.StatusInternalServerError, "", nil)
+			return
+		}
+		if lvl := form.Get("level"); len(lvl) > 0 {
+			alarmLevel = uint16(bytesToInt(lvl))
 		}
 	}
 
-	w.Header().Set(`Content-Type`, `application/json`)
-	const prefix = `{"level": `
-	n := copy(levelJSON[:], prefix)
-	n += uintToBytes(levelJSON[n:], uint32(alarmLevel))
-	levelJSON[n] = '}'
-	w.Write(levelJSON[:n+1])
+	// form values above point into scratch, so only reuse it once we are done with them.
+	json := append(scratch[:0], `{"level": `...)
+	n := uintToBytes(scratch[len(json):], uint32(alarmLevel))
+	json = append(json[:len(json)+n], '}')
+	exch.Respond(httphi.StatusOK, appjson, json)
 }
