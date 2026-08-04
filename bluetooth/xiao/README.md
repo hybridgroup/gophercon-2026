@@ -8,6 +8,14 @@ This series of tutorials is intended to help you learn about programming for Blu
     - SSD1306 display and cables
     - Personal computer with Go 1.25+ and TinyGo installed, and a serial port.
 
+## Connecting the Seeed Studio Xiao ESP32-C3 to your computer
+
+<img src="../../sensor/xiao/assets/xiao-esp32c3-pins.webp" alt="Seeed Studio Xiao ESP32-C3" width="500"/>
+
+Plug the Seeed Studio Xiao ESP32-C3 into your computer using a USB cable. There may be one provided in your starter kit.
+
+You should also attach the small antenna to the Xiao ESP32-C3 board uFL connector for best reception.
+
 ## Code
 
 ### step0.go - Hello, World
@@ -22,7 +30,7 @@ Run the following command to compile your code, and flash it onto the Xiao-ESP32
 tinygo flash -target xiao-esp32c3 -monitor ./step0/
 ```
 
-Once the Xiao-ESP32C3 is flashed correctly, the built-in amber LED to the right of the USB jack should start to turn on and off once per second. Now everything is setup correctly and you are ready to continue.
+Once the Xiao-ESP32C3 is flashed correctly, you should see the message "Hello, World" displayed each second on your terminal and you are ready to continue.
 
 ### step1.go - Bluetooth scan
 
@@ -36,6 +44,16 @@ tinygo flash -target xiao-esp32c3 -monitor ./step1
 
 You will see output on your terminal. Each of the devices list is a Bluetooth device nearby that is advertising itself.
 
+```shell
+Connected to /dev/ttyACM0. Press Ctrl-C to exit.
+Starting BLE
+scanning...
+found device: 43:25:57:76:0B:01 -79 
+found device: 5D:81:64:4E:D2:BD -87 
+found device: F4:FD:9C:36:05:50 -51 SM-0550
+found device: 79:09:B1:71:1F:8F -84
+...
+```
 
 ### step2.go - Bluetooth scan on OLED display
 
@@ -109,7 +127,7 @@ You can also run a simulator on your laptop computer:
 
 ```shell
 
-go run ./tutorial/bluetooth/heartsim
+go run ./heartsim
 ```
 
 Run the code.

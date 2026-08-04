@@ -19,7 +19,7 @@ Do you want a TinyGo programmable badge? We have just a few with us today... Ask
 
 ## Installation
 
-Please read our [installation instructions here](./INSTALL.md).
+Please read our [installation instructions here](./INSTALL.md). Please note that you must install the `dev` version of TinyGo for today's activities.
 
 ## Activities
 
