@@ -57,6 +57,8 @@ found device: 79:09:B1:71:1F:8F -84
 
 ### step2.go - Bluetooth scan on OLED display
 
+![Xiao-ESP32C3](./assets/step2.jpg)
+
 Next step is to scan for Bluetooth device as in the previous step, but displaying the output on the OLED display.
 
 We will add a SSD1306 OLED display to show the results from the Bluetooth scan. We will control this display using an [I2C interface](https://en.wikipedia.org/wiki/I%C2%B2C).

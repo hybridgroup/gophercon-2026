@@ -3,7 +3,7 @@ module github.com/hybridgroup/gophercon-2025/bluetooth/arduino
 go 1.25.0
 
 require (
-	tinygo.org/x/bluetooth v0.15.1-0.20260804012919-1efa9ad3125f
+	tinygo.org/x/bluetooth v0.15.1-0.20260804043454-43e024445e07
 	tinygo.org/x/drivers v0.35.1-0.20260604174950-1d695a231aef
 	tinygo.org/x/tinyfont v0.6.0
 	tinygo.org/x/tinyterm v0.5.0
