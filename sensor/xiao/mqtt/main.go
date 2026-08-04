@@ -52,10 +52,13 @@ var (
 func main() {
 	initDevices()
 	connectWifi()
-	connectToMQTT()
+	go mqttGoroutine()
+	for mqttClient == nil || !mqttClient.IsConnected() {
+		println("waiting for MQTT client to connect...")
+		time.Sleep(5 * time.Second)
+	}
 
 	go handleDisplay()
-	go publishToMQTT()
 
 	for {
 		dialValue = dial.Get()
