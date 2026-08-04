@@ -37,7 +37,7 @@ func connectToMQTT() {
 
 	// Create new client
 	mqttClient = mqtt.NewClient(mqtt.ClientConfig{
-		Decoder: mqtt.DecoderNoAlloc{make([]byte, 1500)},
+		Decoder: mqtt.DecoderNoAlloc{UserBuffer: make([]byte, 1500)},
 		OnPub: func(_ mqtt.Header, _ mqtt.VariablesPublish, r io.Reader) error {
 			message, _ := io.ReadAll(r)
 			println("Message", string(message), "received on topic", topic)

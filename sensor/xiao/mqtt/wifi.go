@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/soypat/lneto/x/netdev"
 	nl "tinygo.org/x/drivers/netlink"
 	"tinygo.org/x/espradio/netlink"
 )
@@ -19,17 +20,20 @@ func connectWifi() {
 	// wait a bit for serial
 	time.Sleep(2 * time.Second)
 
-	println("Connecting to WiFi...")
+	println("Connecting to WiFi...", ssid)
 	err := link.NetConnect(&nl.ConnectParams{
 		Ssid:       ssid,
 		Passphrase: password,
 	})
-
 	if err != nil {
 		failMessage("could not connect to WiFi: " + err.Error())
-	} else {
-		println("Connected to Wifi!")
 	}
+	println("Connected to", ssid)
+	if len(password) > 0 {
+		println("Connected with password length:", len(password))
+	}
+	netdev.UseNetdev(&link)
+
 }
 
 func failMessage(msg string) {
