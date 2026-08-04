@@ -47,6 +47,8 @@ Ready to try this out? Go to [./sensor/xiao/](./sensor/xiao/) to get started.
 
 [TinyGo starter kit by Seeed Studio](https://www.seeedstudio.com/tinygo-xiao-starter-kit.html) provides the for-sale kit you need to continue your ESP32 journey at home with a [dedicated Grove ecosystem TinyGo tutorial](https://github.com/soypat/seeed-grove).
 
+<img width="30%" alt="image" src="https://github.com/user-attachments/assets/37cae97a-e9de-40aa-b708-cdd878d7a495" />
+
 ### TinyGo Bluetooth
 
 [![Go Bluetooth](./images/gobluetooth.png)](https://tinygo.org/bluetooth)
