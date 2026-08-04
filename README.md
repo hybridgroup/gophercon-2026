@@ -39,13 +39,13 @@ Post your robot picture and videos using hashtag #gophercon
 
 Looking for the true "parts experience"? Got you covered! We have brought some Seeed Studio Xiao ESP32-C3 IoT microcontroller boards for each person to use for the activity.
 
-https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html
-
 These can be programmed using TinyGo.
 
 There are some Grove sensor kits that you can use for the activity.
 
 Ready to try this out? Go to [./sensor/xiao/](./sensor/xiao/) to get started.
+
+[TinyGo starter kit by Seeed Studio](https://www.seeedstudio.com/tinygo-xiao-starter-kit.html) provides the for-sale kit you need to continue your ESP32 journey at home with a [dedicated Grove ecosystem TinyGo tutorial](https://github.com/soypat/seeed-grove).
 
 ### TinyGo Bluetooth
 
