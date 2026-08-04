@@ -163,6 +163,12 @@ func systemActivationStatusButton() {
 		// we pushed the button
 		systemActive = !systemActive
 		buttonPush = false
+		if !systemActive {
+			// deactivating must also clear any alarm left over from the last reading
+			alarmTriggered = false
+			dialValue = 0
+			pwm.Set(redPwm, 0)
+		}
 	default:
 		// do nothing
 	}
