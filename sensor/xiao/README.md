@@ -19,6 +19,8 @@ Just for your information, the TinyGo drivers that let you connect to sensors, d
 
 Plug the Seeed Studio Xiao ESP32-C3 into your computer using a USB cable. There may be one provided in your starter kit.
 
+You should also attach the small antenna to the Xiao ESP32-C3 board uFL connector for best reception.
+
 ## Running the code
 
 The TinyGo programs will run directly on the Xiao microcontoller. The procedure is basically:

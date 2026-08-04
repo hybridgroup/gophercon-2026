@@ -17,8 +17,12 @@ https://go.dev/dl/
 
 Now you are ready to install TinyGo.
 
-## Install TinyGo
+## Install TinyGo `dev` branch
 
-You will need to install TinyGo 0.41+ in order to do today's activities.
+You will need to install the latest development branch of TinyGo in order to do today's activities.
 
-https://tinygo.org/getting-started/install/
+- macOS - https://tinygo.org/getting-started/install/macos/#development-builds
+- Linux - https://tinygo.org/getting-started/install/linux/#development-builds
+- Windows - https://tinygo.org/getting-started/install/windows/#development-builds
+
+
