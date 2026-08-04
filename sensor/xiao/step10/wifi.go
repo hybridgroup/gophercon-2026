@@ -22,9 +22,7 @@ func connectWifi() {
 	// wait a bit for serial
 	time.Sleep(2 * time.Second)
 
-	link.ArenaPoolSize = 1024 * 42
-
-	println("Connecting to WiFi...")
+	println("Creating AP with SSID:", ssid)
 	err := link.NetConnectAP(nl.APConnectParams{
 		APConfig: espradio.APConfig{
 			SSID:     ssid,
@@ -35,11 +33,17 @@ func connectWifi() {
 		EnableDHCPServer: true,
 		MaxUDPPorts:      2,
 		MaxTCPPorts:      4,
-		PassivePeers:     8,
+		PassivePeers:     255,
 	})
 
 	if err != nil {
 		failMessage("could not connect to WiFi: " + err.Error())
+	}
+	println("AP up:", ssid)
+	if len(password) > 0 {
+		println("AP has password of length", len(password))
+	} else {
+		println("AP is open (no password required)")
 	}
 }
 

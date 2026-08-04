@@ -22,7 +22,7 @@ func connectWifi() {
 	// wait a bit for serial
 	time.Sleep(2 * time.Second)
 
-	println("Connecting to WiFi...")
+	println("Creating AP with SSID:", ssid)
 	err := link.NetConnectAP(nl.APConnectParams{
 		APConfig: espradio.APConfig{
 			SSID:     ssid,
@@ -38,6 +38,12 @@ func connectWifi() {
 
 	if err != nil {
 		failMessage("could not connect to WiFi: " + err.Error())
+	}
+	println("AP up:", ssid)
+	if len(password) > 0 {
+		println("AP has password of length", len(password))
+	} else {
+		println("AP is open (no password required)")
 	}
 }
 
